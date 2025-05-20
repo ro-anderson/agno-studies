@@ -1,0 +1,108 @@
+## Database Schema Description
+
+This document provides a detailed description of each table in the database, outlining the columns and their intended use. It also explains relationships between tables, serving as a comprehensive reference for AI SQL agents.
+
+---
+
+### 1. **artists**
+- **ArtistId**: Unique identifier for each artist. Primary key.
+- **Name**: Name of the artist.
+
+---
+
+### 2. **albums**
+- **AlbumId**: Unique identifier for each album. Primary key.
+- **Title**: Title of the album.
+- **ArtistId**: Foreign key referencing `artists.ArtistId`, indicating which artist created the album.
+
+---
+
+### 3. **tracks**
+- **TrackId**: Unique identifier for the track. Primary key.
+- **Name**: Name of the track.
+- **AlbumId**: Foreign key referencing `albums.AlbumId`.
+- **MediaTypeId**: Foreign key referencing `media_types.MediaTypeId`.
+- **GenreId**: Foreign key referencing `genres.GenreId`.
+- **Composer**: Composer of the track.
+- **Milliseconds**: Duration of the track in milliseconds.
+- **Bytes**: File size in bytes.
+- **UnitPrice**: Price per unit for the track.
+
+---
+
+### 4. **genres**
+- **GenreId**: Unique identifier for genre. Primary key.
+- **Name**: Name of the genre.
+
+---
+
+### 5. **media_types**
+- **MediaTypeId**: Unique identifier for media type. Primary key.
+- **Name**: Name of the media format (e.g., MP3, WAV).
+
+---
+
+### 6. **customers**
+- **CustomerId**: Unique customer identifier. Primary key.
+- **FirstName**, **LastName**: Customer's name.
+- **Company**: Company name if it's a business customer.
+- **Address**, **City**, **State**, **Country**, **PostalCode**: Customer address fields.
+- **Phone**, **Fax**: Contact numbers.
+- **Email**: Email address.
+- **SupportRepId**: Foreign key referencing `employees.EmployeeId` for customer support assignment.
+
+---
+
+### 7. **employees**
+- **EmployeeId**: Unique identifier for each employee. Primary key.
+- **LastName**, **FirstName**: Name fields.
+- **Title**: Job title.
+- **ReportsTo**: Self-referencing foreign key to another `employees.EmployeeId` indicating manager.
+- **BirthDate**, **HireDate**: Key dates.
+- **Address**, **City**, **State**, **Country**, **PostalCode**: Address fields.
+- **Phone**, **Fax**, **Email**: Contact details.
+
+---
+
+### 8. **invoices**
+- **InvoiceId**: Unique identifier for the invoice. Primary key.
+- **CustomerId**: Foreign key to `customers.CustomerId`.
+- **InvoiceDate**: Date the invoice was issued.
+- **BillingAddress**, **BillingCity**, **BillingState**, **BillingCountry**, **BillingPostalCode**: Billing information.
+- **Total**: Total value of the invoice.
+
+---
+
+### 9. **invoice_items**
+- **InvoiceLineId**: Unique identifier for each item line in an invoice. Primary key.
+- **InvoiceId**: Foreign key referencing `invoices.InvoiceId`.
+- **TrackId**: Foreign key referencing `tracks.TrackId`.
+- **UnitPrice**: Price of the item.
+- **Quantity**: Quantity sold.
+
+---
+
+### 10. **playlists**
+- **PlaylistId**: Unique playlist identifier. Primary key.
+- **Name**: Name of the playlist.
+
+---
+
+### 11. **playlist_track**
+- **PlaylistId**: Foreign key referencing `playlists.PlaylistId`.
+- **TrackId**: Foreign key referencing `tracks.TrackId`.
+- *Composite Primary Key*: (PlaylistId, TrackId)
+
+---
+
+### Relationships Summary
+
+- `albums` ← `artists` (1:N)
+- `tracks` ← `albums`, `media_types`, `genres` (N:1)
+- `invoice_items` ← `invoices`, `tracks` (N:1)
+- `invoices` ← `customers` (1:N)
+- `customers` ← `employees` (1:N for support reps)
+- `employees` ← `employees` (self-referencing hierarchy)
+- `playlist_track` ← `playlists`, `tracks` (N:M)
+
+Ensure proper joins are made based on foreign key references for accurate queries.
